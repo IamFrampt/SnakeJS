@@ -8,7 +8,7 @@ var score = 0;
 
 var snakeTailPartsX = [];
 var snakeTailPartsY = [];
-var tailLength = 2;
+var tailLength = 50;
 var tailXPosition;
 var tailYPosition;
 var preHeadX;
@@ -38,7 +38,6 @@ gameUpdate();
 /* FUNCTIONS */
 
 function gameUpdate() {
-
 
     if (gameStart) {
 
@@ -82,6 +81,7 @@ function gameUpdate() {
 
         ctx.font = "bold 12px Orbitron";
         ctx.fillText("Controls: W,A,S,D or Arrow keys", 5, (canvas.height) - 5);
+        
     }
 }
 
@@ -93,7 +93,7 @@ function clearScreen() {
 function drawSnake() {
 
     for (let i = 0; i <= tailLength; i++) {
-        ctx.fillStyle = 'green'
+        ctx.fillStyle = '#613d7c'
 
         let tempX = snakeTailPartsX[i];
         let tempY = snakeTailPartsY[i];
@@ -105,7 +105,7 @@ function drawSnake() {
         ctx.fillRect(snakeTailPartsX[i] * tileCount, snakeTailPartsY[i] * tileCount, tileSize, tileSize);
 
     }
-    ctx.fillStyle = 'Yellow'
+    ctx.fillStyle = '#6610f2'
     ctx.fillRect(snakeHeadX * tileCount, snakeHeadY * tileCount, tileSize, tileSize);
 }
 
@@ -115,6 +115,13 @@ function drawFood(x, y) {
 }
 
 function resetValues() {
+
+    for (let i = 0; i < tailLength; i++)
+    {
+        snakeTailPartsX[i] = -1;
+        snakeTailPartsY[i] = -1;
+    }
+
     snakeDead = false;
     score = 0;
     snakeHeadX = 7;
@@ -123,14 +130,9 @@ function resetValues() {
     snakeSpeedY = 0;
     snakeSpeed = 7;
     tailLength = 2;
+
     document.getElementById("scoreText").textContent = score;
     randomizeFoodPosition();
-
-    for (let i = 0; i < tailLength; i++)
-    {
-        snakeTailPartsX[i] = -1;
-        snakeTailPartsY[i] = -1;
-    }
 }
 
 function allowNewDirection() {
@@ -204,9 +206,23 @@ function spawnNewFood() {
         document.getElementById("scoreText").textContent = score;
         randomizeFoodPosition();
         tailLength++
+        checkIfFoodSpawnOnTail()
 
         changeSnakeSpeed();
     }
+}
+
+function checkIfFoodSpawnOnTail()
+{
+    for (let i = 0; i < tailLength; i++)
+    {
+        if(snakeTailPartsX[i] == foodX && snakeTailPartsY[i] == foodY)
+        {
+            i = -1
+            randomizeFoodPosition();
+        }
+    }
+
 }
 
 function checkIfDead() {
